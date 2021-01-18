@@ -33,3 +33,9 @@
   become: yes
   roles:
     - docker-swarm-add-worker
+
+- name: assign labels
+  hosts: docker_nodes
+  become: yes
+  roles:
+    - docker-swarm-assign-labels
