@@ -5,10 +5,12 @@
       #- ntp
       - python3
       #- tcpdump
-      #- wget
+      - wget
       - openssl
       - curl
-      - python3-docker
+      - python3-docker    # docker modules
+      - python3-jsondiff  # docker_stack module
+      - python3-yaml      # docker_stack module
     state: latest
     update_cache: yes
     force_apt_get: yes
