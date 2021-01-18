@@ -254,7 +254,7 @@ services:
   ##### Router #####
   router:
     image: mongo:4.4.1
-    command: mongos --port 27017 --configdb configserver/config01:27017,config02:27017,config03:27017 --bind_ip_all
+    command: mongos --port 27017 --configdb configserver/config01:27017,config02:27017,config03:27017 --bind_ip_all --keyFile /run/secrets/mongo_sharded_cluster_keyfile
     ports:
         - "27017:27017"
     volumes:
@@ -262,6 +262,11 @@ services:
         - router_data:/data/db
         - /etc/localtime:/etc/localtime:ro
         - scripts:/scripts:ro
+    secrets:
+        - source: mongo_sharded_cluster_keyfile
+          uid: '999'
+          gid: '999'
+          mode: 0600
     deploy:
         replicas: 3
     networks:
