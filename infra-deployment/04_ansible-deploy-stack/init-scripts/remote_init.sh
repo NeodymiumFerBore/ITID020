@@ -68,18 +68,18 @@ for i in "${!replica_sets_initiators[@]}"; do
         exit 1
     fi
 
-    echo "Initializing $service_name"
+    echo -e "\n[*] Initializing $service_name\n"
     $_ssh "$node" "sudo docker exec '${service_name}.1.${service_id}' sh -c 'mongo --port 27017 < /scripts/${scripts[i]}'"
     #$_ssh "$node" "sudo docker exec '${service_name}.1.${service_id}' sh -c 'cat < /scripts/${scripts[i]}'"
     [ $? -ne 0 ] && echo "Error: could not initialize $service_name" >&2 && exit 1
 done
 
-echo "Sleeping 20sec to be sure that all replica set are initialized..."
-for i in $(seq 1 20); do
-    echo -ne "\r\033[K$i"
-    sleep 1
-done
-echo ''
+#echo "Sleeping 20sec to be sure that all replica set are initialized..."
+#for i in $(seq 1 20); do
+#    echo -ne "\r\033[K$i"
+#    sleep 1
+#done
+#echo ''
 
 # Initialize routers
 for i in $(seq 1 $router_replicas); do
@@ -102,7 +102,7 @@ for i in $(seq 1 $router_replicas); do
         exit 1
     fi
 
-    echo "Initializing $service_name"
+    echo -e "\n[*] Initializing $service_name\n"
     $_ssh "$node" "sudo docker exec '${service_name}.${service_id}' sh -c 'mongo --port 27017 < /scripts/${router_script}'"
     #$_ssh "$node" "sudo docker exec '${service_name}.${service_id}' sh -c 'cat < /scripts/${router_script}'"
     [ $? -ne 0 ] && echo "Error: could not initialize $service_name" >&2
