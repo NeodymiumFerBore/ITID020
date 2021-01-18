@@ -1,10 +1,4 @@
 ---
-- name: Mount NFS volumes
-  hosts: docker_nodes
-  become: yes
-  roles:
-    - mount-nfs-volumes
-
 - name: Copy scripts to shared NFS volume
   hosts: docker_nodes
   become: yes
