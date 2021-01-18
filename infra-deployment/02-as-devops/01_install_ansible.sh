@@ -33,12 +33,16 @@ ret=$?
 echo "Upgrading pip..."
 "${ansible_dir}"/bin/pip install --upgrade pip
 
-echo "Installing ansible version ${ansible_version}..."
-"${ansible_dir}"/bin/pip install ansible=="${ansible_version}"
+echo "Installing ansible ${ansible_version} and some extra packages..."
+"${ansible_dir}"/bin/pip install wheel
 "${ansible_dir}"/bin/pip install netaddr
 "${ansible_dir}"/bin/pip install jmespath
+"${ansible_dir}"/bin/pip install ansible=="${ansible_version}"
 
-echo "source ${ansible_dir}/bin/activate" >> "${HOME}/.bashrc"
-[ ! -d "${HOME}/ITID020" ] && git clone https://github.com/NeodymiumFerBore/ITID020.git "$HOME"
+if ! grep -q "^source ${ansible_dir}/bin/activate" "${HOME}/.bashrc"; then
+    echo "source ${ansible_dir}/bin/activate" >> "${HOME}/.bashrc"
+fi
+echo -e "\nYou will want to activate ansible venv before going further! Run the following:\n"
+echo -e "  source ${ansible_dir}/bin/activate\n"
+exit 0
 
-exit $?
