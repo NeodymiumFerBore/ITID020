@@ -15,7 +15,7 @@ rs.initiate(
 while (!db.isMaster().ismaster) {
 sleep(1000);
 }
-
+/*
 db.getSiblingDB("admin").createUser(
    {
       user: "root",
@@ -39,3 +39,4 @@ db.getSiblingDB("admin").createUser(
       ]
    }
 );
+*/
