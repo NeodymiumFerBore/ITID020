@@ -21,3 +21,12 @@
     group: root
     mode: '0640'
   run_once: true
+
+- name: Copy docker-compose.yml to remote NFS mount point
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/docker-compose.yml"
+    dest: /docker/mongo_sharded/build/
+    owner: root
+    group: root
+    mode: '0640'
+  run_once: true

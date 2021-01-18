@@ -12,5 +12,5 @@
     state: present
     name: "{{ stack_name }}"
     compose:
-      - "{{ lookup('file', 'docker-compose.yml') }}"
+      - /docker/mongo_sharded/build/docker-compose.yml
   run_once: true
