@@ -10,8 +10,8 @@ rs.initiate(
       ]
    }
 );
+print('Waiting to be master...');
 
-// Wait to be master
 while (!db.isMaster().ismaster) {
 sleep(1000);
 }
