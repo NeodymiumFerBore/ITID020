@@ -37,6 +37,7 @@ echo "Installing ansible ${ansible_version} and some extra packages..."
 "${ansible_dir}"/bin/pip install wheel
 "${ansible_dir}"/bin/pip install netaddr
 "${ansible_dir}"/bin/pip install jmespath
+"${ansible_dir}"/bin/pip install jsondiff
 "${ansible_dir}"/bin/pip install ansible=="${ansible_version}"
 
 if ! grep -q "^source ${ansible_dir}/bin/activate" "${HOME}/.bashrc"; then
