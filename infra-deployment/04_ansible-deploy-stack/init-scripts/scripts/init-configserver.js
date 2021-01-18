@@ -13,8 +13,20 @@ rs.initiate(
 
 // Wait to be master
 while (!db.isMaster().ismaster) {
-   sleep(1000)
+sleep(1000);
 }
+
+db.getSiblingDB("admin").createUser(
+   {
+      user: "root",
+      pwd: "verylongpassword",
+      roles: [
+         { role: "root", db: "admin" }
+      ]
+   }
+);
+// Reauth the session
+db.getSiblingDB("admin").auth("root", "verylongpassword");
 
 db.getSiblingDB("admin").createUser(
    {
@@ -24,13 +36,6 @@ db.getSiblingDB("admin").createUser(
          { role: "clusterAdmin", db: "admin" },
          { role: "userAdmin", db: "admin" },
          { role: "userAdminAnyDatabase", db: "admin" }
-      ]
-   },
-   {
-      user: "root",
-      pwd: "verylongpassword",
-      roles: [
-         { role: "root", db: "admin" }
       ]
    }
 );
