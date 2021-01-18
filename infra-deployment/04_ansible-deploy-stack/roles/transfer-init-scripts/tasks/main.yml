@@ -6,7 +6,7 @@
     mode: '0750'
 
 - name: Mount NFS nfs-server:/docker-exports/mongo_sharded -> /docker/mongo_sharded
-  ansible.posix.mount:
+  mount:
     src: 10.211.0.1:/docker-exports/mongo_sharded
     path: /docker/mongo_sharded
     opts: "nfsvers=4,nolock,soft"

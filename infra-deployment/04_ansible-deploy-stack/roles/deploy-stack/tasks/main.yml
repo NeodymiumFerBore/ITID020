@@ -1,7 +1,7 @@
 ---
 - name: Create secret keyfile for cluster operations
   docker_secret:
-    name: "{{ stack_name }}"_cluster_keyfile
+    name: "{{ stack_name }}_cluster_keyfile"
     data: "{{ lookup('file', 'keyfile.txt') }}"
     data_is_b64: true
     state: present
