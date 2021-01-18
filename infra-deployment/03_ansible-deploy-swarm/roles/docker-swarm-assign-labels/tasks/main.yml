@@ -5,3 +5,4 @@
     labels:
       mongo.replica: "{{ hostvars[inventory_hostname]['mongo_replica_label'] }}"
   delegate_to: "{{ groups['swarm_managers'][0] }}"
+  tags: swarm
