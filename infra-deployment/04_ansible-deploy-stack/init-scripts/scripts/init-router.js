@@ -8,7 +8,8 @@ db.getSiblingDB("admin").createUser(
        pwd: "verylongpassword",
        roles: [
           { role: "clusterAdmin", db: "admin" },
-          { role: "userAdmin", db: "admin" }
+          { role: "userAdmin", db: "admin" },
+          { role: "userAdminAnyDatabase", db: "admin" }
        ]
     },
     {
@@ -19,7 +20,11 @@ db.getSiblingDB("admin").createUser(
        ]
     }
  );
- db.getSiblingDB("itid020").createUser(
+
+// Reauth the session
+db.getSiblingDB("admin").auth("root", "verylongpassword")
+
+db.getSiblingDB("itid020").createUser(
     {
        user: "itid020",
        pwd: "SuperPassword",
