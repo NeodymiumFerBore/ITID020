@@ -3,7 +3,7 @@
   docker_secret:
     name: "{{ stack_name }}_cluster_keyfile"
     data: "{{ lookup('file', 'keyfile.txt') }}"
-    data_is_b64: true
+    data_is_b64: false # It actually IS b64 but mongodb doesn't like binary
     state: present
   run_once: true
 
