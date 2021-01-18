@@ -1,0 +1,63 @@
+---
+- name: Get Docker Swarm info
+  docker_swarm_info:
+    nodes: yes
+  ignore_errors: yes
+  register: swarm_info
+  tags: swarm
+
+# Workers will only play this: leaving the swarm
+- name: Workers leaving the Swarm
+  vars:
+    is_manager: "{{ swarm_info['docker_swarm_manager'] }}"
+    is_swarmer: "{{ swarm_info['docker_swarm_active'] }}"
+  docker_swarm:
+    state: absent
+    # need to force: if more then half the managers left the swarm,
+    # the remaining managers will appear as non-manager because they lost consensus
+    force: true
+  when: is_swarmer and not is_manager
+  tags: swarm
+
+#- name: debug
+#  debug: var=swarm_info
+#  tags: swarm
+
+# -------------------------------------------------------------
+
+# Managers will play all from here
+
+# Delete worker nodes (which have already left)
+- name: Managers cleaning up and leaving the Swarm
+  vars:
+    is_manager: "{{ swarm_info['docker_swarm_manager'] }}"
+    is_swarmer: "{{ swarm_info['docker_swarm_active'] }}"
+
+    # Remove all non-manager nodes (and unreachable managers) or any non-ready node (can be down or unkown)
+    #to_remove: "nodes[?(ManagerStatus!='Leader' && ManagerStatus!='reachable') || Status!='ready'].ID"
+    
+    # Nop: If you try to remove a manager (even down/unreachable),
+    # it fails as it is still a member of the consensus
+    # try to demote all managers but 1 then drain them?
+    to_remove: "nodes[?ManagerStatus=='null' && Status!='ready'].ID"
+  
+  with_items:
+    - "{{ swarm_info|json_query(to_remove) }}"
+  docker_swarm:
+    state: remove
+    node_id: "{{ item }}"
+  when: is_swarmer and is_manager
+  # Need to run once as this will fail if half the managers are already gone
+  run_once: true
+  tags: swarm
+
+# Then force leave for self
+- name: Manager leaving the Swarm
+  vars:
+    is_manager: "{{ swarm_info['docker_swarm_manager'] }}"
+    is_swarmer: "{{ swarm_info['docker_swarm_active'] }}"
+  docker_swarm:
+    state: absent
+    force: yes
+  when: is_swarmer and is_manager
+  tags: swarm

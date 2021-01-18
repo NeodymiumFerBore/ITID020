@@ -1,0 +1,3 @@
+---
+- name: restart interface
+  shell: ifdown {{hostvars[inventory_hostname]['advertiseIface']}} && ifup {{hostvars[inventory_hostname]['advertiseIface']}}

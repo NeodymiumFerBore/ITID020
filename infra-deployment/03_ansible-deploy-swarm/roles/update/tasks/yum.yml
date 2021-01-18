@@ -1,0 +1,4 @@
+- name: Update RHEL & CentOS
+  yum:
+    name: '*'
+    state: latest

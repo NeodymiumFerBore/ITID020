@@ -1,0 +1,53 @@
+---
+- name: Check if specified interface exists
+  stat:
+    path: /sys/class/net/{{ hostvars[inventory_hostname]['advertiseIface'] }}
+  register: iface
+
+- name: Fail if the iface does not exist
+  fail:
+    msg: Interface {{ hostvars[inventory_hostname]['advertiseIface'] }} does not exists
+  when: iface.stat.isdir is defined and iface.stat.isdir
+
+# Decided to not use a template, but i don't remember why...
+# Because prefered to manage /etc/network/interfaces in case that
+# the interface was already configured there?
+#- name: Configure Swarm internal interface
+#  template:
+#    src: templates/interface.j2
+#    dest: /etc/network/interfaces.d/{{ hostvars[inventory_hostname]['advertiseIface'] }}
+#    owner: root
+#    group: root
+#    mode: 0644
+#    backup: yes
+#  notify: restart interface
+
+# We have same problem than with the template:
+# Cannot give the interface name to the handler...
+- name: Configure Swarm internal interface
+  blockinfile:
+    path: /etc/network/interfaces
+    block: |
+      allow-hotplug {{ item.iface }}
+      iface {{ item.iface }} inet static
+          address {{ item.ip }}
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  notify: "restart interface"
+  with_items:
+    - { iface: "{{ hostvars[inventory_hostname]['advertiseIface'] }}", ip: "{{ hostvars[inventory_hostname]['advertiseAddr'] }}" }
+
+# If the config file was already good but the interface was down,
+# notify will not get triggered. Check again
+# Don't use cat, or it will trigger a change
+- name: Check if interface is up
+  slurp:
+    src: /sys/class/net/{{ hostvars[inventory_hostname]['advertiseIface'] }}/operstate
+  register: operstate
+
+- vars:
+    s: "{{ operstate['content'] | b64decode | trim }}"
+  shell: ifup {{hostvars[inventory_hostname]['advertiseIface']}}
+  when: s == "down"

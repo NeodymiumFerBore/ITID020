@@ -1,0 +1,20 @@
+---
+- name: Get Docker Swarm info and check if already initialized
+  docker_swarm_info:
+    nodes: yes
+  ignore_errors: yes
+  register: swarm_info
+  tags: swarm
+
+- name: Drain all workers availability
+  docker_node:
+    hostname: "{{ item }}"
+    availability: drain
+  when: swarm_info is not skipped and swarm_info is not failed
+  run_once: true # ?
+  with_items:
+    - "{{ swarm_info|json_query(to_drain) }}"
+  vars:
+    to_drain: "nodes[?ManagerStatus==null || ManagerStatus=='Unavailable'].ID"
+    #to_drain: "nodes[?(ManagerStatus==null || ManagerStatus=='Unavailable') && Availability=='active'].ID"
+  tags: swarm

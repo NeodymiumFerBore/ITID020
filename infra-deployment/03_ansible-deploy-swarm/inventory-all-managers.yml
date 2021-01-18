@@ -1,0 +1,36 @@
+all:
+  children:
+    docker:
+      children:
+        docker_nodes:
+          hosts:
+            deb-docker1:
+            deb-docker2:
+            deb-docker3:
+          
+        swarm_managers:
+          hosts:
+            deb-docker1:
+              advertiseIface: ens37
+              advertiseAddr: 10.0.0.1/28
+              #listenIface: ens37
+              #listenAddr: 10.0.0.1/28
+              #dataPathAddr: 10.1.1.1/28
+              #dataPathAddr: ensXX
+        
+        #swarm_workers:
+        #  hosts:
+            deb-docker2:
+              advertiseIface: ens37
+              advertiseAddr: 10.0.0.2/28
+              #listenIface: ens37
+              #listenAddr: 10.0.0.2/28
+            deb-docker3:
+              advertiseIface: ens37
+              advertiseAddr: 10.0.0.3/28
+              #listenIface: ens37
+              #listenAddr: 10.0.0.3/28
+        swarm_workers:
+          hosts:
+      vars:
+        ansible_python_interpreter: /usr/bin/python3

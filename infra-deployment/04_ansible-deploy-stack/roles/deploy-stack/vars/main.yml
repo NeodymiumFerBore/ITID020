@@ -1,0 +1,10 @@
+stack_name: mongo_sharded
+
+initdb_root_password: verylongpassword
+initdb_root_username: root
+
+admin_username: admin
+admin_password: verylongpassword
+
+clusteradmin_username: clusteradmin
+clusteradmin_password: verylongpassword

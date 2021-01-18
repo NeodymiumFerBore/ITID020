@@ -1,0 +1,16 @@
+---
+- name: Create secret keyfile for cluster operations
+  docker_secret:
+    name: "{{ stack_name }}"_cluster_keyfile
+    data: "{{ lookup('file', 'keyfile.txt') }}"
+    data_is_b64: true
+    state: present
+  run_once: true
+
+- name: Deploy stack
+  docker_stack:
+    state: present
+    name: "{{ stack_name }}"
+    compose:
+      - "{{ lookup('file', 'docker-compose.yml') }}"
+  run_once: true

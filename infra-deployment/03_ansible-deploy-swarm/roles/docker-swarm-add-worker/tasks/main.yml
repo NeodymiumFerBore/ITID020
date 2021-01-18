@@ -1,0 +1,10 @@
+---
+# No need to check if already joined
+- name: Add Workers to the Swarm
+  docker_swarm:
+    state: join
+    advertise_addr: "{{ hostvars[inventory_hostname]['advertiseAddr'] | regex_replace('\\/.*$', '') }}"
+    listen_addr: "{{ hostvars[inventory_hostname]['advertiseAddr'] | regex_replace('\\/.*$', '') }}"
+    join_token: "{{ hostvars[inventory_hostname]['swarm_worker_token'] }}"
+    remote_addrs: "{{ hostvars[inventory_hostname]['swarm_join_ip_port'] }}"
+  tags: swarm

@@ -1,0 +1,5 @@
+- name: Update
+  include_tasks: apt.yml
+  when: ansible_facts['distribution'] == "Debian" or ansible_facts['distribution'] == "Ubuntu"
+- include_tasks: yum.yml
+  when: ansible_facts['distribution'] == "CentOS" or ansible_facts['distribution'] == "RedHat"

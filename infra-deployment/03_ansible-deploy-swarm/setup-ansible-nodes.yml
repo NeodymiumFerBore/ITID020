@@ -1,0 +1,21 @@
+---
+- name: Initial setup
+  #vars_prompt:
+  #  - name: "ansible_ssh_user"
+  #    prompt: "ssh user: "
+  #    private: no
+  #  - name: "ansible_ssh_pass"
+  #    prompt: "ssh password: "
+  #    private: yes
+
+  #vars:
+  #  ansible_become_pass: "{{ ansible_ssh_pass }}"
+  
+  hosts: all
+  become: yes
+  roles:
+    - set-hostname
+    - create-sudo-user
+    - update
+    - reboot
+    #- install-modules

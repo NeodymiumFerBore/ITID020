@@ -1,0 +1,20 @@
+---
+- name: drain all workers availability
+  hosts: swarm_managers
+  serial: 1
+  become: yes
+  roles:
+    - docker-swarm-drain-all-workers
+
+- name: workers leave the swarm
+  hosts: swarm_workers
+  become: yes
+  roles:
+    - docker-swarm-leave
+
+- name: managers leave the swarm
+  hosts: swarm_managers
+  serial: 1
+  become: yes
+  roles:
+    - docker-swarm-leave

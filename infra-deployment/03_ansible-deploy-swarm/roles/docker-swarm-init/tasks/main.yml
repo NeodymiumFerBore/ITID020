@@ -1,0 +1,52 @@
+---
+- name: Get Docker Swarm info
+  docker_swarm_info:
+  ignore_errors: yes
+  register: swarm_info
+  tags: swarm
+
+- name: Initialize Docker Swarm
+  vars:
+    swarm_active: "{{ swarm_info['docker_swarm_active'] }}"
+  docker_swarm:
+    state: present
+    election_tick: 5
+    advertise_addr: "{{ hostvars[inventory_hostname]['advertiseAddr'] | regex_replace('\\/.*$', '') }}"
+    listen_addr:    "{{ hostvars[inventory_hostname]['advertiseAddr'] | regex_replace('\\/.*$', '') }}"
+  when: not swarm_active
+  register: swarm_info
+  run_once: true
+  tags: swarm
+
+# Re-gather swarm_facts as previous task is conditional
+# and may override it with "skipped" status:
+
+- name: Get Docker Swarm info if we lost it
+  docker_swarm_info:
+  ignore_errors: yes
+  register: swarm_info
+  tags: swarm
+
+#- name: debug
+#  debug: var=swarm_info
+#  tags: swarm
+
+- name: Register Docker Swarm tokens as facts for all hosts
+  set_fact:
+    swarm_manager_token: "{{ swarm_info['swarm_facts']['JoinTokens']['Manager'] }}"
+    swarm_worker_token: "{{ swarm_info['swarm_facts']['JoinTokens']['Worker'] }}"
+    swarm_join_ip_port: "{{ hostvars[inventory_hostname]['advertiseAddr'] | regex_replace('\\/.*$', ':2377') }}"
+    #swarm_join_ip_port: "{{ groups['swarm_managers'] | map('extract', hostvars, 'advertiseAddr') | map('regex_replace', '\\/.*$', ':2377')  | flatten }}"
+  delegate_to: "{{ item }}"
+  delegate_facts: True
+  with_items: "{{ groups['docker_nodes'] }}"
+  run_once: yes
+  tags: swarm
+
+- name: debug
+  debug:
+    msg:
+      - "{{ swarm_manager_token }}"
+      - "{{ swarm_worker_token }}"
+      - "{{ swarm_join_ip_port }}"
+  tags: swarm

@@ -1,0 +1,30 @@
+---
+#- name: Check if Swarm is Already Initialized
+#  shell: docker node ls
+#  register: swarm_status
+#  ignore_errors: true
+#  tags: swarm
+
+#- name: Add Managers to the Swarm
+#  shell: >
+#    docker swarm join
+#    --token "{{ swarm_manager_token }}"
+#    "{{ swarm_join_ip_port }}"
+#  when: swarm_status.rc != 0
+#  tags: swarm
+
+#- name: Get Docker Swarm info and check if already initialized
+#  docker_swarm_info:
+#  ignore_errors: yes
+#  register: swarm_info
+#  tags: swarm
+
+- name: Add Managers to the Swarm
+  docker_swarm:
+    state: join
+    advertise_addr: "{{ hostvars[inventory_hostname]['advertiseAddr'] | regex_replace('\\/.*$', '') }}"
+    listen_addr: "{{ hostvars[inventory_hostname]['advertiseAddr'] | regex_replace('\\/.*$', '') }}"
+    join_token: "{{ hostvars[inventory_hostname]['swarm_manager_token'] }}"
+    remote_addrs: "{{ hostvars[inventory_hostname]['swarm_join_ip_port'] }}"
+  #when: not "{{ swarm_info['docker_swarm_active'] }}"
+  tags: swarm

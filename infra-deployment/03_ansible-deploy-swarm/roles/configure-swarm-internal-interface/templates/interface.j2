@@ -1,0 +1,3 @@
+allow-hotplug {{ hostvars[inventory_hostname]['advertiseIface'] }}
+iface {{ hostvars[inventory_hostname]['advertiseIface'] }} inet static
+    address {{ hostvars[inventory_hostname]['advertiseAddr'] }}

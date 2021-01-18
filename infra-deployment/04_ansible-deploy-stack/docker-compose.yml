@@ -1,0 +1,337 @@
+version: '3.6'
+services:
+
+  ##### Config Servers #####
+  config01:
+    image: mongo:4.4.1
+    command: mongod --port 27017 --configsvr --replSet configserver --keyFile /run/secrets/mongo_sharded_cluster_keyfile
+    volumes:
+        - config01_config:/data/configdb
+        - config01_data:/data/db
+        - /etc/localtime:/etc/localtime:ro
+        - scripts:/scripts:ro
+    secrets:
+        - source: mongo_sharded_cluster_keyfile
+            uid: '999'
+            gid: '999'
+            mode: 0600
+    deploy:
+        replicas: 1
+        placement:
+            constraints:
+                - node.labels.mongo.replica == 1
+    networks:
+        - net_mongo
+
+  config02:
+    image: mongo:4.4.1
+    command: mongod --port 27017 --configsvr --replSet configserver --keyFile /run/secrets/mongo_sharded_cluster_keyfile
+    volumes:
+        - config02_config:/data/configdb
+        - config02_data:/data/db
+        - /etc/localtime:/etc/localtime:ro
+    secrets:
+        - source: mongo_sharded_cluster_keyfile
+            uid: '999'
+            gid: '999'
+            mode: 0600
+    deploy:
+        replicas: 1
+        placement:
+            constraints:
+                - node.labels.mongo.replica == 2
+    networks:
+        - net_mongo
+
+  config03:
+    image: mongo:4.4.1
+    command: mongod --port 27017 --configsvr --replSet configserver --keyFile /run/secrets/mongo_sharded_cluster_keyfile
+    volumes:
+        - config03_config:/data/configdb
+        - config03_data:/data/db
+        - /etc/localtime:/etc/localtime:ro
+    secrets:
+        - source: mongo_sharded_cluster_keyfile
+            uid: '999'
+            gid: '999'
+            mode: 0600
+    deploy:
+        replicas: 1
+        placement:
+            constraints:
+                - node.labels.mongo.replica == 3
+    networks:
+        - net_mongo
+
+  ##### Shards #####
+
+  ##### shard01
+  shard01a:
+    image: mongo:4.4.1
+    command: mongod --port 27017 --shardsvr --replSet shard01 --keyFile /run/secrets/mongo_sharded_cluster_keyfile
+    volumes:
+        - shard01a_config:/data/configdb
+        - shard01a_data:/data/db
+        - /etc/localtime:/etc/localtime:ro
+    secrets:
+        - source: mongo_sharded_cluster_keyfile
+            uid: '999'
+            gid: '999'
+            mode: 0600
+    deploy:
+        replicas: 1
+        placement:
+            constraints:
+                - node.labels.mongo.replica == 1
+    networks:
+        - net_mongo
+
+  shard01b:
+    image: mongo:4.4.1
+    command: mongod --port 27017 --shardsvr --replSet shard01 --keyFile /run/secrets/mongo_sharded_cluster_keyfile
+    volumes:
+        - shard01b_config:/data/configdb
+        - shard01b_data:/data/db
+        - /etc/localtime:/etc/localtime:ro
+        - scripts:/scripts:ro
+    secrets:
+        - source: mongo_sharded_cluster_keyfile
+            uid: '999'
+            gid: '999'
+            mode: 0600
+    deploy:
+        replicas: 1
+        placement:
+            constraints:
+                - node.labels.mongo.replica == 2
+    networks:
+        - net_mongo
+
+  shard01c:
+    image: mongo:4.4.1
+    command: mongod --port 27017 --shardsvr --replSet shard01 --keyFile /run/secrets/mongo_sharded_cluster_keyfile
+    volumes:
+        - shard01c_config:/data/configdb
+        - shard01c_data:/data/db
+        - /etc/localtime:/etc/localtime:ro
+    secrets:
+        - source: mongo_sharded_cluster_keyfile
+            uid: '999'
+            gid: '999'
+            mode: 0600
+    deploy:
+        replicas: 1
+        placement:
+            constraints:
+                - node.labels.mongo.replica == 3
+    networks:
+        - net_mongo
+
+  ##### shard02
+  shard02a:
+    image: mongo:4.4.1
+    command: mongod --port 27017 --shardsvr --replSet shard02 --keyFile /run/secrets/mongo_sharded_cluster_keyfile
+    volumes:
+        - shard02a_config:/data/configdb
+        - shard02a_data:/data/db
+        - /etc/localtime:/etc/localtime:ro
+    secrets:
+        - source: mongo_sharded_cluster_keyfile
+            uid: '999'
+            gid: '999'
+            mode: 0600
+    deploy:
+        replicas: 1
+        placement:
+            constraints:
+                - node.labels.mongo.replica == 2
+    networks:
+        - net_mongo
+
+  shard02b:
+    image: mongo:4.4.1
+    command: mongod --port 27017 --shardsvr --replSet shard02 --keyFile /run/secrets/mongo_sharded_cluster_keyfile
+    volumes:
+        - shard02b_config:/data/configdb
+        - shard02b_data:/data/db
+        - /etc/localtime:/etc/localtime:ro
+        - scripts:/scripts:ro
+    secrets:
+        - source: mongo_sharded_cluster_keyfile
+            uid: '999'
+            gid: '999'
+            mode: 0600
+    deploy:
+        replicas: 1
+        placement:
+            constraints:
+                - node.labels.mongo.replica == 1
+    networks:
+        - net_mongo
+
+  shard02c:
+    image: mongo:4.4.1
+    command: mongod --port 27017 --shardsvr --replSet shard02 --keyFile /run/secrets/mongo_sharded_cluster_keyfile
+    volumes:
+        - shard02c_config:/data/configdb
+        - shard02c_data:/data/db
+        - /etc/localtime:/etc/localtime:ro
+    secrets:
+        - source: mongo_sharded_cluster_keyfile
+            uid: '999'
+            gid: '999'
+            mode: 0600
+    deploy:
+        replicas: 1
+        placement:
+            constraints:
+                - node.labels.mongo.replica == 3
+    networks:
+        - net_mongo
+
+  ##### shard03
+  shard03a:
+    image: mongo:4.4.1
+    command: mongod --port 27017 --shardsvr --replSet shard03 --keyFile /run/secrets/mongo_sharded_cluster_keyfile
+    volumes:
+        - shard03a_config:/data/configdb
+        - shard03a_data:/data/db
+        - /etc/localtime:/etc/localtime:ro
+    secrets:
+        - source: mongo_sharded_cluster_keyfile
+            uid: '999'
+            gid: '999'
+            mode: 0600
+    deploy:
+        replicas: 1
+        placement:
+            constraints:
+                - node.labels.mongo.replica == 3
+    networks:
+        - net_mongo
+
+  shard03b:
+    image: mongo:4.4.1
+    command: mongod --port 27017 --shardsvr --replSet shard03 --keyFile /run/secrets/mongo_sharded_cluster_keyfile
+    volumes:
+        - shard03b_config:/data/configdb
+        - shard03b_data:/data/db
+        - /etc/localtime:/etc/localtime:ro
+        - scripts:/scripts:ro
+    secrets:
+        - source: mongo_sharded_cluster_keyfile
+            uid: '999'
+            gid: '999'
+            mode: 0600
+    deploy:
+        replicas: 1
+        placement:
+            constraints:
+                - node.labels.mongo.replica == 1
+    networks:
+        - net_mongo
+
+  shard03c:
+    image: mongo:4.4.1
+    command: mongod --port 27017 --shardsvr --replSet shard03 --keyFile /run/secrets/mongo_sharded_cluster_keyfile
+    volumes:
+        - shard03c_config:/data/configdb
+        - shard03c_data:/data/db
+        - /etc/localtime:/etc/localtime:ro
+    secrets:
+        - source: mongo_sharded_cluster_keyfile
+            uid: '999'
+            gid: '999'
+            mode: 0600
+    deploy:
+        replicas: 1
+        placement:
+            constraints:
+                - node.labels.mongo.replica == 2
+    networks:
+        - net_mongo
+
+  ##### Router #####
+  router:
+    image: mongo:4.4.1
+    command: mongos --port 27017 --configdb configserver/config01:27017,config02:27017,config03:27017 --bind_ip_all
+    ports:
+        - "27017:27017"
+    volumes:
+        - router_config:/data/configdb
+        - router_data:/data/db
+        - /etc/localtime:/etc/localtime:ro
+        - scripts:/scripts:ro
+    deploy:
+        replicas: 3
+    networks:
+        - net_mongo
+    depends_on:
+        - config01
+        - config02
+        - config03
+        - shard01a
+        - shard01b
+        - shard01c
+        - shard02a
+        - shard02b
+        - shard02c
+        - shard03a
+        - shard03b
+        - shard03c
+
+##### Networks #####
+
+networks:
+    net_mongo:
+        driver: overlay
+        #ipam:
+        #    config:
+        #        - subnet: 10.0.2.0/24
+
+##### Secrets #####
+
+secrets:
+    mongo_sharded_cluster_keyfile:
+        external: true
+
+##### Volumes #####
+
+volumes:
+    scripts:
+        driver: local #?
+        driver_opts:
+            type: nfs
+            o: "addr=10.211.0.1,nfsvers=4,nolock,soft"
+            device: ":/docker-exports/mongo_sharded/scripts"
+    
+    config01_config:
+    config01_data:
+    config02_config:
+    config02_data:
+    config03_config:
+    config03_data:
+    
+    shard01a_config:
+    shard01a_data:
+    shard01b_config:
+    shard01b_data:
+    shard01c_config:
+    shard01c_data:
+    
+    shard02a_config:
+    shard02a_data:
+    shard02b_config:
+    shard02b_data:
+    shard02c_config:
+    shard02c_data:
+
+    shard03a_config:
+    shard03a_data:
+    shard03b_config:
+    shard03b_data:
+    shard03c_config:
+    shard03c_data:
+
+    router_config:
+    router_data:

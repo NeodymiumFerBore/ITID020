@@ -1,0 +1,35 @@
+---
+- name: setup pre-requisites
+  hosts: all
+  become: yes
+  roles:
+    - create-sudo-user
+    - install-modules
+    - configure-hosts-file
+    - configure-swarm-internal-interface
+
+- name: install docker
+  hosts: docker_nodes
+  become: yes
+  roles:
+    - docker-installation
+
+- name: initialize docker swarm
+  hosts: swarm_managers[0]
+  any_errors_fatal: true
+  become: yes
+  roles:
+    - docker-swarm-init
+
+- name: add managers to the swarm
+  hosts: swarm_managers[1:]
+  any_errors_fatal: true
+  become: yes
+  roles:
+    - docker-swarm-add-manager
+
+- name: add workers to the swarm
+  hosts: swarm_workers
+  become: yes
+  roles:
+    - docker-swarm-add-worker
