@@ -82,7 +82,13 @@ done
 #echo ''
 
 # Initialize routers
-for i in $(seq 1 $router_replicas); do
+# Breaking news: only 1 router needs to be initialized, as the others ones
+# get all their conf/metadata from config servers, which are authenticated
+# with the keyFile!!
+# https://programmersought.com/article/69584268245/
+
+#for i in $(seq 1 $router_replicas); do
+for i in '1'; do
     err=""
     service_name="${stack_name}_${router}.$i" # stack_router.1
     if ! is_unique "$service_name"; then
