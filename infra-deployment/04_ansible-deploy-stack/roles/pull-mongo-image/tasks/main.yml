@@ -1,0 +1,4 @@
+- name: pull mongo image
+  docker_image:
+    name: mongo:4.4.1
+    source: pull

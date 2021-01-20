@@ -3,11 +3,12 @@
   apt:
     name:
       #- ntp
-      - python3
       #- tcpdump
       - wget
       - openssl
       - curl
+      - nfs-common
+      - python3
       - python3-docker    # docker modules
       - python3-jsondiff  # docker_stack module
       - python3-yaml      # docker_stack module

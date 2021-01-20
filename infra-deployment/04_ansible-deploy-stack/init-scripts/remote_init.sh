@@ -111,7 +111,10 @@ for i in '1'; do
     echo -e "\n[*] Initializing $service_name\n"
     $_ssh "$node" "sudo docker exec '${service_name}.${service_id}' sh -c 'mongo --port 27017 < /scripts/${router_script}'"
     #$_ssh "$node" "sudo docker exec '${service_name}.${service_id}' sh -c 'cat < /scripts/${router_script}'"
-    [ $? -ne 0 ] && echo "Error: could not initialize $service_name" >&2
+    [ $? -ne 0 ] && echo "Error: could not initialize $service_name" >&2 && exit 1
 done
+
+echo -e "\n[*] You should now be able to connect to your mongo cluster:\n"
+echo -e "mongo mongodb://mongo1:27017,mongo2:27017,mongo3:27017\n"
 
 exit $?

@@ -12,7 +12,7 @@ kernel_count="$(ls -1 /boot | wc -l)"
 apt-get update
 apt-get upgrade      -y --fix-missing
 apt-get dist-upgrade -y --fix-missing
-apt-get -y install python3 python3-venv python3-pip git wget curl vim
+apt-get -y install python3 python3-venv python3-pip git wget curl vim sshpass
 
 if ! id -u "${ansible_user}" &>/dev/null; then
     adduser "${ansible_user}"

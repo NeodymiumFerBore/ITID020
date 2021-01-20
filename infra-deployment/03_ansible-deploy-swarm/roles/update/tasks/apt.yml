@@ -4,3 +4,4 @@
     upgrade: dist
     autoremove: yes
     autoclean: yes
+    force_apt_get: yes

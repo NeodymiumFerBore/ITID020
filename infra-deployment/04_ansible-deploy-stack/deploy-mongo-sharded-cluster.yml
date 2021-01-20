@@ -1,8 +1,9 @@
 ---
-- name: Copy scripts to shared NFS volume
+- name: Prepare nodes
   hosts: docker_nodes
   become: yes
   roles:
+    - pull-mongo-image
     - transfer-init-scripts
 
 - name: Deploy stack
